@@ -15,6 +15,7 @@
 	</head>
 	
 	<body>
+
 	<div id="map"></div>
 		<!-- HTML text here. -->
 
@@ -24,9 +25,53 @@
 		<button onclick="logAnnotation('bear')">Bear</button>
 		<button onclick="logAnnotation('ice')">Thin Ice</button>
 		<button onclick="logAnnotation('hole')">Hole</button>
+		<button onclick="toggleReports()">Toggle Reports</button>
 
 		<!-- javascript within HTML doc -->
 		<script>
+
+var reports = {{ reports|tojson|safe }};
+var reportMarkers = [];
+var reportsOn = false;
+
+function getIcon(message) {
+	if (message == 'bear') {
+		return '../static/img/bear_report.png';
+	}
+	if (message == 'ice') {
+		return '../static/img/thin_ice_report.png';
+	}
+	if (message == 'hole') {
+		return '../static/img/alert_report.png';
+	}
+	return null;
+}
+
+function toggleReports() {
+	if (reports.length > 0 && reportMarkers.length == 0) { // make reports
+		for (var i=0; i<reports.length; i++) {
+			var latlng = reports[i];
+			message = reports[i].message;
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map,
+				title: message,
+				icon: getIcon(message)
+			});
+			reportMarkers.push(marker);
+		}
+		reportsOn = true;
+	} else {
+		var mapset = map;
+		reportsOn = !reportsOn;
+		if (!reportsOn) {
+			mapset = null;
+		}
+		for (var i=0; i<reportMarkers.length; i++) {
+			reportMarkers[i].setMap(mapset);
+		}
+	}
+}
 
 function Log(position, annotation=null) {
 	this.position = position;
@@ -118,7 +163,8 @@ function updateRecords(latlng, message) {
 	var marker = new google.maps.Marker({
 		position: latlng,
 		map: map,
-		title: message
+		title: message,
+		icon: getIcon(message)
 	});
 	activeHuntAnnotations.push(marker);
 //	(function closure(msg) {marker.addListener('click', function() {
@@ -163,10 +209,12 @@ function initMap() {
 		centerPos = {lat: rp.latitude, lng: rp.longitude};
 	}
 	map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 15,
+		zoom: 9,
 		center: centerPos,
 		mapTypeId: google.maps.MapTypeId.TERRAIN
 	});
+
+	toggleReports();
 }
 
 		</script>
