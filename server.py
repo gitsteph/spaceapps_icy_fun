@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, flash, session, jso
 from model import connect_to_db, db, User, UserPath, Photo, AudioVideoRecording, ReportType, Report
 
 import os
+import random
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -69,6 +70,15 @@ def logout():
 def register():
 	pass
 
+def gen_fake_reports(lat, lng, range, num):
+    random.seed(1) # for consistent fake data
+    things = ['bear', 'hole', 'thin ice']
+    return [{'lat': lat+random.uniform(-range,range), 'lng': lng+random.uniform(-range,range), 'message': random.choice(things)} for i in xrange(num)]
+
+@app.route('/track', methods=['GET'])
+def track():
+    fake_reports = gen_fake_reports(65, 165, 1, 20)
+    return render_template('track.html', reports=fake_reports)
 
 ###############################################
 # Main
@@ -76,5 +86,5 @@ def register():
 if __name__ == '__main__':
 	connect_to_db(app)
 
-	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+	app.run(debug=DEBUG, host="0.0.0.0", port=PORT, ssl_context='adhoc')
 
