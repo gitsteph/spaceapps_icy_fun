@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session, jsonify
 
-from model import connect_to_db, db
+# from model import connect_to_db, db
 
 import os
 
@@ -22,7 +22,7 @@ DEBUG = "NO_DEBUG" not in os.environ
 @app.route('/')
 def home():
 	# 
-	return render_template('base.html')
+	return render_template('home.html')
 
 
 
@@ -31,5 +31,5 @@ def home():
 # Main
 
 if __name__ == '__main__':
-	connect_to_db(app)
+	# connect_to_db(app)
 	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
