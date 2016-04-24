@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, jsonify
+
 from model import connect_to_db, db, User, UserPath, Photo, AudioVideoRecording, ReportType, Report
+
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -75,3 +77,4 @@ if __name__ == '__main__':
 	connect_to_db(app)
 
 	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+

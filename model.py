@@ -11,6 +11,7 @@ db = SQLAlchemy()
 ####################################################################
 #Model definitions
 
+
 class User(db.Model):
 	"""User of site.  Includes superusers."""
 
