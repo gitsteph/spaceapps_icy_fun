@@ -21,7 +21,7 @@ class User(db.Model):
     email = db.Column(db.String(40), nullable=False, unique=True)
     name = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(40), nullable=False)
-    superuser_status = db.Column(db.Integer, nullable=False)
+    superuser_status = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
@@ -50,7 +50,7 @@ class Photo(db.Model):
     photo_ptr = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     geocoordinates = db.Column(db.JSON)
-    public = db.Column(db.Integer, nullable=False, default=1)
+    public = db.Column(db.Boolean, nullable=False, default=True)
     userpath_id = db.Column(db.Integer, db.ForeignKey('userpaths.id'), nullable=True)
 
 
@@ -63,7 +63,7 @@ class AudioVideoRecording(db.Model):
     recording_ptr = db.Column(db.String, nullable=False)
     start_dt = db.Column(db.DateTime, nullable=False)
     end_dt = db.Column(db.DateTime, nullable=False)
-    public = db.Column(db.Integer, nullable=False, default=0)
+    public = db.Column(db.Boolean, nullable=False, default=False)
     userpath_id = db.Column(db.Integer, db.ForeignKey('userpaths.id'), nullable=True)
 
 
@@ -85,7 +85,7 @@ class Report(db.Model):
     rtype_id = db.Column(db.Integer, db.ForeignKey('reporttypes.id'), nullable=False)
     date_logged = db.Column(db.DateTime, nullable=False)
     geocoordinates = db.Coordinates(db.JSON)
-    public = db.Column(db.Integer, nullable=False, default=1)
+    public = db.Column(db.Boolean, nullable=False, default=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
