@@ -72,7 +72,7 @@ def register():
 
 def gen_fake_reports(lat, lng, range, num):
     random.seed(1) # for consistent fake data
-    things = ['bear', 'hole', 'thin ice']
+    things = ['bear', 'hole', 'ice']
     return [{'lat': lat+random.uniform(-range,range), 'lng': lng+random.uniform(-range,range), 'message': random.choice(things)} for i in xrange(num)]
 
 @app.route('/track', methods=['GET'])
