@@ -3,3 +3,5 @@ venv/
 secrets.sh
 *.pyc
 .idea/
+.DS_Store
+uploads/

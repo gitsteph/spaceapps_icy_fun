@@ -1,11 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, jsonify
-<<<<<<< HEAD
 
-from model import connect_to_db, db
-
-=======
 from model import connect_to_db, db, User, UserPath, Photo, AudioVideoRecording, ReportType, Report
->>>>>>> d31f5ac80cabbbefcce39a0559e6775077c97340
+
 import os
 
 
@@ -32,8 +28,6 @@ def home():
 
 if __name__ == '__main__':
 	connect_to_db(app)
-<<<<<<< HEAD
+
 	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
-=======
-	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
->>>>>>> d31f5ac80cabbbefcce39a0559e6775077c97340
+
