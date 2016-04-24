@@ -11,7 +11,6 @@ db = SQLAlchemy()
 ####################################################################
 #Model definitions
 
-
 class User(db.Model):
 	"""User of site.  Includes superusers."""
 
@@ -37,7 +36,7 @@ class UserPath(db.Model):
 
 	id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-	gps_path = db.Column(db.JSON, nullable=False)
+	gps_path = db.Column(JSON, nullable=False)
 	created_at = db.Column(db.DateTime, nullable=False)
 
 
@@ -49,7 +48,7 @@ class Photo(db.Model):
 	id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
 	photo_ptr = db.Column(db.String, nullable=False)
 	created_at = db.Column(db.DateTime, nullable=False)
-	geocoordinates = db.Column(db.JSON)
+	geocoordinates = db.Column(JSON)
 	public = db.Column(db.Boolean, nullable=False, default=True)
 	userpath_id = db.Column(db.Integer, db.ForeignKey('userpaths.id'), nullable=True)
 
@@ -84,7 +83,7 @@ class Report(db.Model):
 	id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
 	rtype_id = db.Column(db.Integer, db.ForeignKey('reporttypes.id'), nullable=False)
 	date_logged = db.Column(db.DateTime, nullable=False)
-	geocoordinates = db.Coordinates(db.JSON)
+	geocoordinates = db.Column(JSON)
 	public = db.Column(db.Boolean, nullable=False, default=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
@@ -96,7 +95,7 @@ def connect_to_db(app):
 	"""Connect the database to our Flask app."""
 
 	# Configure to use postgresql database depending on if it's deployed or local
-	DATABASE_URL = os.environ.get("DATABASE_URL", 'postgresql://coreyshott@localhost:5432/icyfun')
+	DATABASE_URL = os.environ.get("DATABASE_URL", 'postgresql://test@localhost:5432/icyfun')
 
 	app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 
