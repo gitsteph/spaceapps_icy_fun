@@ -24,7 +24,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use postgresql database depending on if it's deployed or local
-    DATABASE_URL = os.environ.get("DATABASE_URL", 'postgresql://coreyshott@localhost:5432/icyfun')
+    DATABASE_URL = os.environ.get("DATABASE_URL", 'postgresql://HBspaceapps@localhost:5432/icyfun')
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 
