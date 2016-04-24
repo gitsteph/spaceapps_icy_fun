@@ -16,9 +16,9 @@ From the terminal in the project directory, run:
 
 1. Open (or install) postgres (there should be an elephant in your toolbar) (http://postgresapp.com/)
 2. After opening postgres on your mac, press the `open psql` button
-3. Create the user by entering `CREATE USER HBspaceapps;`
+3. Create the user by entering `CREATE USER test;`
 5. Create the database by entering `CREATE DATABASE icyfun;`
-6. Grant privileges on the DB by entering: `GRANT ALL PRIVILEGES ON DATABASE icyfun to HBspaceapps;`
+6. Grant privileges on the DB by entering: `GRANT ALL PRIVILEGES ON DATABASE icyfun to test;`
 
 ## Run the server locally:
 
