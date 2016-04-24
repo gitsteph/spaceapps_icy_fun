@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Track</title>
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			#map {
+				height: 90%;
+			}
+		</style>
+	</head>
+	
+	<body>
+	<div id="map"></div>
+		<!-- HTML text here. -->
+
+		This page will track a hunt!
+		<button onclick="startHunt()">Start Hunt</button>
+		<button onclick="endHunt()">End Hunt</button>
+		<button onclick="logAnnotation('bear')">Bear</button>
+		<button onclick="logAnnotation('ice')">Thin Ice</button>
+		<button onclick="logAnnotation('hole')">Hole</button>
+
+		<!-- javascript within HTML doc -->
+		<script>
+
+function Log(position, annotation=null) {
+	this.position = position;
+	this.annotation = annotation;
+}
+
+var lastPos = null;
+var map = null;
+var mapIsReady = false;
+var activeHuntLog = [];
+var activeHuntRecords = [];
+var activeHuntAnnotations = [];
+var huntPathLine = null;
+var huntInterval = null;
+
+// I use this to center the map on your location but still let you move the map w/out constant re-centering
+var MAP_PAN_MOVE_THRESH = .2; // how many km you must move before the map will pan to your new location
+
+init();
+
+function init() {
+	if (navigator.geolocation) { // get a lastPos ASAP; there's a lag for the geolocation to start working
+		navigator.geolocation.getCurrentPosition(function(pos) {
+			if (!lastPos) { lastPos = pos; }
+		}, error);
+	}
+}
+function error(msg) {
+	alert("Geolocation failed!  This page requires access to your GPS data.");
+}
+
+function clearAnnotations(annotations) {
+	for (var i=0; i<annotations.length; i++) {
+		annotations[i].setMap(null);
+	}
+}
+
+function endHunt() {
+	if (huntInterval) {
+		clearInterval(huntInterval);
+	}
+}
+
+function startHunt() {
+	clearAnnotations(activeHuntAnnotations);
+	activeHuntAnnotations = [];
+	activeHuntRecords = [];
+	activeHuntLog = [];
+	huntPathLine = null;
+	if (huntInterval) {
+		clearInterval(huntInterval);
+	}
+	huntInterval = setInterval(logPosition, 1000);
+}
+
+function updatePath(latlng) {
+	if (!huntPathLine) {
+		huntPathLine = new google.maps.Polyline({
+			geodesic: true,
+			strokeColor: '#FF0000',
+			strokeOpacity: 1.0,
+			strokeWeight: 2
+		});
+		huntPathLine.setMap(map);
+		activeHuntAnnotations.push(huntPathLine);
+	}
+	var path = huntPathLine.getPath();
+	var pt = new google.maps.LatLng(parseFloat(latlng.lat).toFixed(5), parseFloat(latlng.lng).toFixed(5));
+	path.push(pt);
+}
+
+function logPosition(note=null) {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(pos) {
+			activeHuntLog.push(new Log(pos, note));
+			latlng = {'lat': pos.coords.latitude, 'lng': pos.coords.longitude};
+			if (map && (lastPos == null || distanceInKm(lastPos, pos) > MAP_PAN_MOVE_THRESH)) {
+				map.panTo(latlng);
+				lastPos = pos;
+			}
+			updatePath(latlng);
+		}, error);
+	} else {
+		console.log('geoloc failed');
+	}
+}
+
+function updateRecords(latlng, message) {
+	var marker = new google.maps.Marker({
+		position: latlng,
+		map: map,
+		title: message
+	});
+	activeHuntAnnotations.push(marker);
+//	(function closure(msg) {marker.addListener('click', function() {
+//		alert("This user-annotation says: " + msg);
+//	})})(huntLog[i].annotation.message);
+}
+
+function logAnnotation(message) {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(pos) {
+			latlng = {'lat': pos.coords.latitude, 'lng': pos.coords.longitude};
+			updateRecords(latlng, message);
+		}, error);
+	} else {
+		console.log('geoloc failed');
+	}
+}
+
+function distanceInKm(c1,c2) { // lat-long -> distance fn from stackoverflow
+	var lat1=c1.coords.latitude, lon1=c1.coords.longitude;
+	var lat2=c2.coords.latitude, lon2=c2.coords.longitude;
+	var R = 6371; // Radius of the earth in km
+	var dLat = deg2rad(lat2-lat1);  // deg2rad below
+	var dLon = deg2rad(lon2-lon1);
+	var a =
+	Math.sin(dLat/2) * Math.sin(dLat/2) +
+	Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+	Math.sin(dLon/2) * Math.sin(dLon/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	var d = R * c; // Distance in km
+	return d;
+}
+
+function deg2rad(deg) {
+	return deg * (Math.PI/180)
+}
+
+function initMap() {
+	centerPos = {lat: 37.788163499999996, lng: -122.39975400000002};
+	if (lastPos) {
+		rp = lastPos.coords;
+		centerPos = {lat: rp.latitude, lng: rp.longitude};
+	}
+	map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 15,
+		center: centerPos,
+		mapTypeId: google.maps.MapTypeId.TERRAIN
+	});
+}
+
+		</script>
+
+		<script async defer
+		src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+		</script>
+
+	</body>
+
+</html>
