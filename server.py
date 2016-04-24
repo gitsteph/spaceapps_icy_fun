@@ -18,12 +18,12 @@ DEBUG = "NO_DEBUG" not in os.environ
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+	return render_template('home.html')
 
 
 ###############################################
 # Main
 
 if __name__ == '__main__':
-    connect_to_db(app)
-    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+	connect_to_db(app)
+	app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
